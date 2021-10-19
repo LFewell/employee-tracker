@@ -1,7 +1,9 @@
 const express = require("express");
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
+const cTable = require("console.table")
 // require('dotenv').config()
+
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -35,7 +37,7 @@ const init = () => {
             case "Add Employee":
                 addEmployee();
                 break;
-            case "View Employees":
+            case "View All Employees":
                 viewEmployees();
                 break;
             case "Add Department":
@@ -47,10 +49,10 @@ const init = () => {
              case "Add Role":
                 addRole();
                 break;
-            case "View Roles":
+            case "View All Roles":
                 viewRoles();
                 break;
-            case "Update Employee":
+            case "Update Employee Role":
                 updateEmployee();
                 break;
             case "Quit":
@@ -142,19 +144,19 @@ const addRole = () => {
                 title: answer.title,
                 salary: answer.salary,
                 department_id: answer.departmentId
-            },
-            init()
+            },   
         )
+        
     })
 }
 
 const viewEmployees = () => {
-    db.query(`SELECT id AS employeeId, CONCAT(first_name, last_name) AS Employees, role_id AS Role from employee`, (err, data) => {
+    db.query(`SELECT id AS EmployeeID, CONCAT(first_name," ", last_name) AS Employees, role_id AS Role FROM employee`, (err, data) => {
         if (err) throw err;
         console.table(data);
         init();
     });
-}
+};
 
 const viewDepartments = () => {
     db.query(`SELECT name AS Departments FROM department`, (err, data) => {
@@ -162,15 +164,15 @@ const viewDepartments = () => {
         console.table(data);
         init();
     });
-}
+};
 
 const viewRoles = () => {
-    db.query(`SELECT title AS Title, department_id AS Department FROM role`), (err, data) => {
-        if (err) throw err;
+    db.query(`SELECT title AS Title, salary AS Salary, department_id AS Department FROM role`, (err, data) => {
+        if (err) throw err
         console.table(data);
         init();
-    }
-}
+    });
+};
 
 const updateEmployee = () => {
     inquirer.prompt([
@@ -187,11 +189,11 @@ const updateEmployee = () => {
     ])
     .then((answer) => {
         db.query(`UPDATE employee SET role_id = ${answer.newRole} WHERE id = ${answer.employeeId}`,
-        init()
         )
+        init();
     })
 }
-init();
+// init();
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
