@@ -30,8 +30,10 @@ const init = () => {
         }
     )
     .then((answer) => {
-        if (answer.intro === "Add Employee"){
-            addEmployee();
+        switch(answer.intro) {
+            case "Add Employee":
+                addEmployee();
+                break;
         }
     }) 
 }
@@ -52,6 +54,11 @@ const addEmployee = () => {
             name: "roleId",
             type: "number",
             message: "What is the employee's role number?"
+        },
+        {
+            name: "managerId",
+            type: "input",
+            message: "Who is the employees manager? (leave blank if none)"
         }
     ])
     .then((answer) => {
@@ -60,13 +67,65 @@ const addEmployee = () => {
             {
                 first_name: answer.firstName,
                 last_name: answer.lastName,
-                role_id: answer.roleId
+                role_id: answer.roleId,
+                manager_id: answer.managerId
                 
             }
         )
     })
 }
 
+const addDepartment = () => {
+    inquirer.prompt([
+        {
+            name: "addDepartment",
+            type: "input",
+            message: "What is the name of the new department?"
+        }
+    ])
+    .then((answer) => {
+        db.query(
+            "INSERT INTO department SET ?",
+            {
+                name: answer.addDepartment
+            },
+        )
+    })
+}
+
+const addRole = () => {
+    inquirer.prompt([
+        {
+            name: "title",
+            type: "input",
+            message: "What is the title for this role?"
+        },
+        {
+            name: "salary",
+            type: "number",
+            message: "What is the salary for this role?"
+        },
+        {
+            name: "departmentId",
+            type: "number",
+            message: "What is the department number?"
+        },
+    ])
+    .then ((answer) => {
+        db.query(
+            "INSERT INTO role SET ?",
+            {
+                title: answer.title,
+                salary: answer.salary,
+                department_id: answer.departmentId
+            }
+        )
+    })
+}
+
+const viewEmployees = () => {
+    db.query()
+}
 init();
 
 app.listen(PORT, () => {
