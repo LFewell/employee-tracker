@@ -44,6 +44,18 @@ const init = () => {
             case "View All Departments":
                 viewDepartments();
                 break;
+             case "Add Role":
+                addRole();
+                break;
+            case "View Roles":
+                viewRoles();
+                break;
+            case "Update Employee":
+                updateEmployee();
+                break;
+            case "Quit":
+                db.end;
+                break;
         }
     }) 
 }
@@ -137,7 +149,7 @@ const addRole = () => {
 }
 
 const viewEmployees = () => {
-    db.query(`SELECT id AS EmployeeID, CONCAT(first_name, last_name) AS Employees, role_id AS Role from employee`, (err, data) => {
+    db.query(`SELECT id AS employeeId, CONCAT(first_name, last_name) AS Employees, role_id AS Role from employee`, (err, data) => {
         if (err) throw err;
         console.table(data);
         init();
@@ -145,10 +157,38 @@ const viewEmployees = () => {
 }
 
 const viewDepartments = () => {
-    db.query(`SELECT title AS Title, department_id AS Department FROM role`, (err, data) => {
+    db.query(`SELECT name AS Departments FROM department`, (err, data) => {
         if (err) throw err;
         console.table(data);
         init();
+    });
+}
+
+const viewRoles = () => {
+    db.query(`SELECT title AS Title, department_id AS Department FROM role`), (err, data) => {
+        if (err) throw err;
+        console.table(data);
+        init();
+    }
+}
+
+const updateEmployee = () => {
+    inquirer.prompt([
+        {
+            name: "employeeId",
+            type: "number",
+            message: "Enter employee id number to update role"
+        },
+        {
+            name:"newRole",
+            type: "number",
+            message: "Enter new role number"
+        },
+    ])
+    .then((answer) => {
+        db.query(`UPDATE employee SET role_id = ${answer.newRole} WHERE id = ${answer.employeeId}`,
+        init()
+        )
     })
 }
 init();
