@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
+// require('dotenv').config()
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -34,6 +35,15 @@ const init = () => {
             case "Add Employee":
                 addEmployee();
                 break;
+            case "View Employees":
+                viewEmployees();
+                break;
+            case "Add Department":
+                addDepartment();
+                break;
+            case "View All Departments":
+                viewDepartments();
+                break;
         }
     }) 
 }
@@ -55,22 +65,23 @@ const addEmployee = () => {
             type: "number",
             message: "What is the employee's role number?"
         },
-        {
-            name: "managerId",
-            type: "input",
-            message: "Who is the employees manager? (leave blank if none)"
-        }
+        // {
+        //     name: "managerId",
+        //     type: "input",
+        //     message: "Who is the employees manager? (leave blank if none)"
+        // }
     ])
     .then((answer) => {
         db.query(
-            "INSERT INTO employee SET ?",
+            `INSERT INTO employee SET ?`,
             {
                 first_name: answer.firstName,
                 last_name: answer.lastName,
                 role_id: answer.roleId,
-                manager_id: answer.managerId
+                // manager_id: answer.managerId
                 
-            }
+            },
+            init()
         )
     })
 }
@@ -85,10 +96,11 @@ const addDepartment = () => {
     ])
     .then((answer) => {
         db.query(
-            "INSERT INTO department SET ?",
+            `INSERT INTO department SET ?`,
             {
                 name: answer.addDepartment
             },
+            init()
         )
     })
 }
@@ -113,18 +125,31 @@ const addRole = () => {
     ])
     .then ((answer) => {
         db.query(
-            "INSERT INTO role SET ?",
+            `INSERT INTO role SET ?`,
             {
                 title: answer.title,
                 salary: answer.salary,
                 department_id: answer.departmentId
-            }
+            },
+            init()
         )
     })
 }
 
 const viewEmployees = () => {
-    db.query()
+    db.query(`SELECT id AS EmployeeID, CONCAT(first_name, last_name) AS Employees, role_id AS Role from employee`, (err, data) => {
+        if (err) throw err;
+        console.table(data);
+        init();
+    });
+}
+
+const viewDepartments = () => {
+    db.query(`SELECT title AS Title, department_id AS Department FROM role`, (err, data) => {
+        if (err) throw err;
+        console.table(data);
+        init();
+    })
 }
 init();
 
