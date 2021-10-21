@@ -2,7 +2,6 @@ const express = require("express");
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-// require('dotenv').config()
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -83,11 +82,6 @@ const addEmployee = () => {
         type: "number",
         message: "What is the employee's role number?",
       },
-      // {
-      //     name: "managerId",
-      //     type: "input",
-      //     message: "Who is the employees manager? (leave blank if none)"
-      // }
     ])
     .then((answer) => {
       db.query(
