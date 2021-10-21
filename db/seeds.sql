@@ -25,4 +25,4 @@ VALUES
     ("Kunal", "Singh", 3),
     ("Malia", "Brown", 3),
     ("Sarah", "Lourd", 4),
-    ("Tom", "Allen", 4),
+    ("Tom", "Allen", 4);
